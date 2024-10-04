@@ -49,18 +49,28 @@ substitutions:
   dry: "\U000F058E"
   fan: "\U000F0210"
 esphome:
-  name: ha-panel-1
-  friendly_name: HA panel 1
+  name: hapanel
+  friendly_name: Guition Hapanel
   platformio_options:
     board_build.flash_mode: dio
   on_boot:
-    - delay: 5s
-    - lvgl.widget.hide: boot_screen
-    - delay: 30s
-    - light.turn_on:
-          id: backlight
-          brightness: 75%
-          transition_length: 4s
+    then:
+      - delay: 5s
+      - lvgl.widget.hide: boot_screen
+      - delay: 10s
+      - if:
+          condition:
+            lambda: 'return id(night_mode);'
+          then:
+            # Backlight aanzetten bij opstart
+            - light.turn_on:
+                id: backlight
+                brightness: 75%
+                transition_length: 2s
+            # Schakel backlight na 30 seconden weer uit als het nacht is
+            - delay: 30s
+            - light.turn_off: backlight
+
 
 esp32:
   board: esp32-s3-devkitc-1
@@ -106,17 +116,24 @@ wifi:
   - ssid: ssidname
     password: secret
   #use_address: 192.168.9.75
-
+  domain: .lan
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "Ha-Panel-1 Fallback Hotspot"
     password: secret
 
 captive_portal:
+web_server:
+  port: 80
 
-external_components:
-  - source: github://pr#7338
-    components: [lvgl]
+button:
+  - platform: restart
+    name: reboot
+
+sun:
+  latitude: 51.521159
+  longitude: 4.271538
+  id: my_sun
 
 #-----------------------------------------------------------------------------------------------------------
 # Content
@@ -144,8 +161,8 @@ lvgl:
         bg_color: 0x111111
         bg_grad_color: 0x111111
       checked: # set some btn colors to be different in checked state
-        bg_color: 0x111111
-        bg_grad_color: 0x111111
+        bg_color: 0x333333
+        bg_grad_color: 0x333333
         text_color: 0xf6ff00
     buttonmatrix:
       bg_opa: TRANSP
@@ -285,7 +302,7 @@ lvgl:
           y: 2
           text_font: top_icons
           text_align: left
-          text_color: 0x800000
+          text_color: 0xBD0000
       - label:
           text: "\U000F0438"
           id: heating_status
@@ -295,11 +312,11 @@ lvgl:
           y: 2
           text_font: top_icons
           text_align: left
-          text_color: 0x800000
+          text_color: 0xBD0000
       - label:
           id: display_airco_icon
           align: top_left
-          x: 40
+          x: 20
           y: 2
           text_font: top_airco
           text_align: left
@@ -438,7 +455,7 @@ lvgl:
             x: 20
 
         - button:
-            x: 320
+            x: 250
             y: 260
             width: 60
             height: 58
@@ -446,7 +463,7 @@ lvgl:
             widgets:
                - label:
                   text_font: light32
-                  id: living_room_light_l1_btn
+                  id: zolderlamp_button
                   text: "\U000F0335"
                   align: center
             on_click:
@@ -808,7 +825,10 @@ globals:
   - id: dimmer_level
     type: int
     restore_value: no
-
+  - id: night_mode
+    type: bool
+    restore_value: no
+    initial_value: 'false'
 
 sensor:
   - platform: uptime
@@ -820,7 +840,7 @@ sensor:
     id: house_temp_sensor
     entity_id: sensor.aircozolder_ble_temp
     on_value:
-      then:
+     then:
          - lvgl.label.update:
             id: display_house_temp
             text: 
@@ -1075,7 +1095,7 @@ text_sensor:
         - text_sensor.template.publish:
             id: zolder_airco_icon
             state: !lambda return id(ha_airco_cond).state.c_str();
-
+        - component.update: zolder_airco_icon
 
   - platform: template
     id: zolder_airco_icon
@@ -1084,16 +1104,34 @@ text_sensor:
       if (state == "cool") { return std::string("$cool"); }
       else if (state == "heat") { return std::string("$heat"); }
       else if (state == "dry") { return std::string("$dry"); }
-      else if (state == "fan") { return std::string("$fan"); }
-      return std::string("$happyface");
+      else if (state == "fan_only") { return std::string("$fan"); }
+      return std::string("");  
+
     on_value:
       then:
-        - logger.log: id(zolder_airco_icon).state.c_str()
-        - lvgl.label.update:
-            id: display_airco_icon
-            text: !lambda return id(zolder_airco_icon).state.c_str();
+        - lambda: |-
+            if (id(zolder_airco_icon).state != "") {
+              lv_label_set_text(id(display_airco_icon), id(zolder_airco_icon).state.c_str());
+              
+              // Stel de kleur in op basis van de airco modus
+              if (id(zolder_airco_icon).state == "$cool") {
+                lv_obj_set_style_text_color(id(display_airco_icon), lv_color_hex(0x0000FF), LV_PART_MAIN);  // Blauw voor cool
+              } else if (id(zolder_airco_icon).state == "$heat") {
+                lv_obj_set_style_text_color(id(display_airco_icon), lv_color_hex(0xFF0000), LV_PART_MAIN);  // Rood voor heat
+              } else if (id(zolder_airco_icon).state == "$dry") {
+                lv_obj_set_style_text_color(id(display_airco_icon), lv_color_hex(0xFFCB75), LV_PART_MAIN);  // Licht oranje voor dry
+              } else {
+                lv_obj_set_style_text_color(id(display_airco_icon), lv_color_hex(0x00FFFF), LV_PART_MAIN);  // Cyan kleur voor andere modes
+              }
+            } else {
+              lv_label_set_text(id(display_airco_icon), " ");  // Tekst leegmaken om het icoon te verbergen
+            }
 
-  
+
+
+
+
+
   - platform: homeassistant
     id: ha_weather_cond
     entity_id: weather.weerstation
@@ -1101,17 +1139,27 @@ text_sensor:
       - to_upper
     on_value:
       then:
-#        - lvgl.label.update:
-#            id: display_weather
-#            text: !lambda return id(ha_weather_cond).state.c_str();
-        - text_sensor.template.publish:
-            id: weather_condition_icon
-            state: !lambda return id(ha_weather_cond).state.c_str();
+        - lambda: |-
+            id(weather_condition_icon).publish_state(id(ha_weather_cond).state.c_str());
+        - component.update: weather_condition_icon
+
+
+
 
   - platform: template
     id: weather_condition_icon
     lambda: |-
       std::string state = id(ha_weather_cond).state.c_str();
+
+      // Controleer de elevation om te bepalen of het nacht is
+      if (id(my_sun).elevation() < 0) {  // Haakjes toegevoegd
+        if (state == "SUNNY") {
+          return std::string("$night");
+        } else if (state == "PARTLYCLOUDY") {
+          return std::string("$nightpartlycloudy");
+        }
+      }
+
       if (state == "RAINY") { return std::string("$rainy"); }
       else if (state == "CLOUDY") { return std::string("$cloudy"); }
       else if (state == "PARTLYCLOUDY") { return std::string("$partlycloudy"); }
@@ -1141,7 +1189,11 @@ text_sensor:
         - lvgl.label.update:
             id: display_weather_icon
             text: !lambda return id(weather_condition_icon).state.c_str();
-  
+
+
+
+
+
   - platform: homeassistant
     id: ha_weather_temp
     entity_id: weather.weerstation
@@ -1156,15 +1208,24 @@ text_sensor:
  
 binary_sensor:
   - platform: homeassistant
-    id: living_room_light_l1
+    id: zolderlamp
     entity_id: switch.zolderverlichting
     publish_initial_state: true
     on_state:
       then:
-        - lvgl.widget.update:
-            id: living_room_light_l1_btn
-            state:
-              checked: !lambda "return x;"
+        - if:
+            condition:
+               lambda: 'return id(zolderlamp).state == true;'
+            then:
+              - lvgl.widget.update:
+                  id: zolderlamp_button
+                  text_color: 0xFFCB75
+            else:
+              - lvgl.widget.update:
+                  id: zolderlamp_button
+                  text_color: 0xFFFFFF
+
+
 
   - platform: homeassistant
     id: radio_status_sensor
@@ -1296,29 +1357,6 @@ light:
 # Graphicsd and Fonts
 #-------------------------------------------
 image:
-  #- file: 'images/back1.png'
-  #  id: back1
-  #  type: RGB565
-  
-  - file: 'images/back2.png'
-    id: back2
-    type: RGB565
-  
-  #- file: 'images/back3.png'
-  #  id: back3
-  #  type: RGB565
-  
-  #- file: 'images/back4.png'
-  #  id: back4
-  #  type: RGB565
-  
-  #- file: 'images/back5.png'
-  #  id: back5
-  #  type: RGB565
-  
-  - file: 'images/back6.png'
-    id: back6
-    type: RGB565
   
   - file: 'images/back7.png'
     id: back7
@@ -1327,7 +1365,8 @@ image:
   - file: 'images/ha_logo2.png'
     id: boot_logo
     type: RGB565
-    
+
+
 font:
   - file: "gfonts://Roboto"
     id: roboto24
@@ -1571,25 +1610,37 @@ touchscreen:
     - script.stop: screen_light
     - script.execute: screen_light
 
+
+interval:
+  - interval: 30s
+    then:
+      - lambda: |-
+          auto now = id(ha_date).now();
+          if ((now.hour >= 22 && now.minute >= 45) || (now.hour < 7)) {
+            id(night_mode) = true;
+          } else {
+            id(night_mode) = false;
+          }
+
 script:
   - id: screen_light
     mode: restart
     then:
+      # Zet de backlight aan bij aanraking
       - lvgl.resume:
       - light.turn_on:
           id: backlight
-          brightness: 100%          
-          transition_length: 1s
-      - delay: 30s
-      - light.turn_on:
-            id: backlight
-            brightness: 75%
-            transition_length: 2s
-      - delay: 15min
-      - light.turn_on:
-            id: backlight
-            brightness: 75%
-            transition_length: 5s
+          brightness: 75%
+          transition_length: 2s
+
+      # Controleer of het 'night mode' is
+      - if:
+          condition:
+            lambda: 'return id(night_mode);'
+          then:
+            # Schakel backlight na 30 seconden weer uit als het nacht is
+            - delay: 30s
+            - light.turn_off: backlight
 
 #-------------------------------------------
 # Display st7701s spi
