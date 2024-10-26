@@ -9,8 +9,10 @@ substitutions:
   house_solar: "\U000F1A73"
   house_solar2: "\U000F0A72"
   house_valve: "\U000F1066"
+  house_co2: "\U000F07E4"
   airco: "\U000F001B"
   powerbutton: "\U000F0906"
+  groupbulb: "\U000F1253"
 #weather icons
   cloudy: "\U000F0590"
   cloudyalert: "\U000F0F2F"
@@ -49,8 +51,8 @@ substitutions:
   dry: "\U000F058E"
   fan: "\U000F0210"
 esphome:
-  name: hapanel
-  friendly_name: Guition Hapanel
+  name: woonkamerpanel
+  friendly_name: Guition Woonkamerpanel
   platformio_options:
     board_build.flash_mode: dio
   on_boot:
@@ -89,7 +91,6 @@ psram:
   mode: octal
   speed: 80MHz
 
-# Enable logging
 logger:
 
 # Enable Home Assistant API
@@ -113,7 +114,7 @@ ota:
 
 wifi:
   networks:
-  - ssid: ssidname
+  - ssid: apname
     password: secret
   #use_address: 192.168.9.75
   domain: .lan
@@ -121,6 +122,8 @@ wifi:
   ap:
     ssid: "Ha-Panel-1 Fallback Hotspot"
     password: secret
+
+
 
 captive_portal:
 web_server:
@@ -163,29 +166,7 @@ lvgl:
       checked: # set some btn colors to be different in checked state
         bg_color: 0x333333
         bg_grad_color: 0x333333
-        text_color: 0xf6ff00
-    buttonmatrix:
-      bg_opa: TRANSP
-      border_color: 0x333333
-      border_width: 0
-      text_color: 0xFFFFFF
-      pad_all: 0
-      items: # set all your btnmatrix buttons to use your custom defined styles and font
-        bg_color: 0x333333
-        bg_grad_color: 0x333333
-        bg_grad_dir: VER
-        bg_opa: COVER
-        border_color: 0x333333
-        border_width: 1
-        text_color: 0xFFFFFF
-        #text_font: roboto10
-        pressed:
-          bg_color: 0x111111
-          bg_grad_color: 0x111111
-        checked:
-          bg_color: 0x111111
-          bg_grad_color: 0x111111
-          text_color: 0xEEEEEE
+        text_color: 0xFFCB75
     switch:
       bg_color: 0xC0C0C0
       bg_grad_color: 0xb0b0b0
@@ -203,9 +184,7 @@ lvgl:
         bg_opa: COVER
     slider:
       border_width: 1
-      border_opa: 30%
       bg_color: 0x9c9c9c
-      bg_opa: 15%
       indicator:
         bg_color: 0x333333
         bg_grad_color: 0x333333
@@ -240,94 +219,17 @@ lvgl:
           hidden: true
           align: top_right
           x: -10
-          y: 90
+          y: 80
           text_align: right
           text_color: 0xFFFFFF
-      - label:
-          text: "\U000F04C3"
-          id: radio_status
-          hidden: true
-          align: top_left
-          x: 300
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xFFFFFF
-      - label:
-          text: "\U000F0379"
-          id: tv_status
-          hidden: true
-          align: top_left
-          x: 260
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xFFFFFF
-      - label:
-          text: "\U000F10AF"
-          id: schuur_status
-          hidden: true
-          align: top_left
-          x: 220
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xFFFFFF
-      - label:
-          text: "\U000F0872"
-          id: garage_status
-          hidden: true
-          align: top_left
-          x: 180
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xFFFFFF
-      - label:
-          text: "\U000F081C"
-          id: kelder_status
-          hidden: true
-          align: top_left
-          x: 140
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xFFFFFF
-      - label:
-          text: "\U000F058F"
-          id: hotwater_status
-          hidden: true
-          align: top_left
-          x: 100
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xBD0000
-      - label:
-          text: "\U000F0438"
-          id: heating_status
-          hidden: true
-          align: top_left
-          x: 60
-          y: 2
-          text_font: top_icons
-          text_align: left
-          text_color: 0xBD0000
-      - label:
-          id: display_airco_icon
-          align: top_left
-          x: 20
-          y: 2
-          text_font: top_airco
-          text_align: left
-          text_color: 0xFFFFFF
+
       - label:
           align: RIGHT_MID
           id: display_date
           text: date
           text_font: roboto24
           text_color: 0xFFFFFF
-          y: -60
+          y: -70
           x: -45
       - label:
           align: RIGHT_MID
@@ -335,70 +237,25 @@ lvgl:
           text: clock
           text_font: roboto90
           text_color: 0xFFFFFF
-          y: -120
+          y: -130
           x: -30
-      - label:
-          align: LEFT_MID
-          id: display_house_temp
-          text: house temp
-          text_font: roboto32
-          text_color: 0xFFFFFF
-          y: 10
-          x: 20 
-      - label:
-          align: LEFT_MID
-          id: display_house_hum
-          text: house hum
-          text_font: roboto32
-          text_color: 0xFFFFFF
-          y: 52
-          x: 20
 
-      - label:
+      - image:
           align: LEFT_MID
-          id: display_weather_icon
-          text: $happyface
-          text_color: 0xFFFFFF
-          bg_opa: TRANSP
-          text_font: weather_icons
-          y: -90
-          x: 30
+          id: display_weather_image
+          src: w_green
+          y: -110
+          x: 0
       - label:
           align: CENTER
           id: display_temp
           text: temp
           text_font: roboto32
           text_color: 0xFFFFFF
-          y: -140
+          y: -150
           x: -80
 
 
-
-      - buttonmatrix:
-          align: bottom_mid
-          styles: header_footer
-          pad_all: 0
-          outline_width: 0
-          id: top_layer
-          items:
-            styles: header_footer
-          rows:
-            - buttons:
-              - id: page_prev
-                text: "\uF053"
-                on_press:
-                  then:
-                    lvgl.page.previous:
-              - id: page_home
-                text: "\uF015"
-                on_press:
-                  then:
-                    lvgl.page.show: clock_page
-              - id: page_next
-                text: "\uF054"
-                on_press:
-                  then:
-                    lvgl.page.next:
       - obj:
           id: boot_screen
           x: 0
@@ -414,7 +271,6 @@ lvgl:
             - image:
                 align: CENTER
                 src: boot_logo
-                y: -40
             - spinner:
                 align: CENTER
                 y: 95
@@ -434,16 +290,49 @@ lvgl:
     - id: clock_page
       widgets:
 
+
         - image:
             align: CENTER
-            src: back7
+            src: back1
+
+        - label:
+            text: "\U000F04C3"
+            id: radio_status
+            hidden: true
+            align: top_left
+            x: 300
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xFFFFFF
+        - label:
+            text: "\U000F0379"
+            id: tv_status
+            hidden: true
+            align: top_left
+            x: 260
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xFFFFFF
+        - label:
+            text: "\U000F10AF"
+            id: schuur_status
+            hidden: true
+            align: top_left
+            x: 220
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xFFFFFF
+
         - label:
             align: LEFT_MID
             id: display_solar
             text: Solar
             text_font: roboto24
             text_color: 0xFFFFFF
-            y: 95
+            y: 42
             x: 20
         - label:
             align: LEFT_MID
@@ -451,30 +340,150 @@ lvgl:
             text: Solar2
             text_font: roboto24
             text_color: 0xFFFFFF
-            y: 130
+            y: 85
             x: 20
 
+        - label:
+            text: "\U000F0872"
+            id: garage_status
+            hidden: true
+            align: top_left
+            x: 180
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xFFFFFF
+        - label:
+            text: "\U000F081C"
+            id: kelder_status
+            hidden: true
+            align: top_left
+            x: 140
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xFFFFFF
+        - label:
+            text: "\U000F058F"
+            id: hotwater_status
+            hidden: true
+            align: top_left
+            x: 100
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xBD0000
+        - label:
+            text: "\U000F0438"
+            id: heating_status
+            hidden: true
+            align: top_left
+            x: 60
+            y: 2
+            text_font: top_icons
+            text_align: left
+            text_color: 0xBD0000
+        - label:
+            id: display_airco_icon
+            align: top_left
+            x: 20
+            y: 2
+            text_font: top_airco
+            text_align: left
+            text_color: 0xFFFFFF
+
+
         - button:
-            x: 250
-            y: 260
-            width: 60
+            x: 10
+            y: 400
+            width: 150
             height: 58
             checkable: true
             widgets:
                - label:
-                  text_font: light32
+                  text_font: huelight32
                   id: zolderlamp_button
-                  text: "\U000F0335"
-                  align: center
+                  text: "\U0000EA10"
+                  align: LEFT_MID
+               - label:
+                  text_font: roboto24
+                  text: "Lampen"
+                  text_color: 0xFFFFFF
+                  long_mode: dot
+                  align: RIGHT_MID
+            on_click:
+              - homeassistant.service:
+                  service: light.toggle
+                  data_template:
+                    entity_id: light.woonkamer_lampen
+
+        - button:
+            x: 170
+            y: 400
+            width: 150
+            height: 58
+            checkable: true
+            widgets:
+               - label:
+                  text_font: huelight32
+                  id: keuken_button
+                  text: "\U0000EA5C"
+                  align: LEFT_MID
+               - label:
+                  text: "Keuken"
+                  text_color: 0xFFFFFF
+                  long_mode: dot
+                  align: RIGHT_MID
+            on_click:
+              - light.toggle: panel_switch
+
+        - button:
+            x: 330
+            y: 400
+            width: 140
+            height: 58
+            checkable: true
+            widgets:
+               - label:
+                  text_font: huelight32
+                  id: buitenlamp_button
+                  text: "\U0000E95F"
+                  align: LEFT_MID
+               - label:
+                  text: "Buiten"
+                  text_color: 0xFFFFFF
+                  long_mode: dot
+                  align: RIGHT_MID
             on_click:
               - homeassistant.service:
                   service: switch.toggle
                   data_template:
-                    entity_id: switch.zolderverlichting
+                    entity_id: switch.buitenlamp
+
+
+        - button:
+            x: 0
+            y: 210
+            width: 160
+            height: 50
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            widgets:
+              - label:
+                  id: display_house_temp
+                  text: house temp
+                  text_font: roboto32
+                  text_color: 0xFFFFFF
+            on_press:
+              then:
+                lvgl.page.show: hvac_page
+
+
+
 
         - button:
             x: 250
-            y: 340
+            y: 320
             width: 60
             height: 50
             widgets:
@@ -488,11 +497,13 @@ lvgl:
                 - homeassistant.service:
                     service: cover.open_cover
                     data:
-                      entity_id: cover.rolluikzolder_cover_1
+                      entity_id: cover.rolluikwoonkamer_cover_1
+
+
 
         - button:
             x: 320
-            y: 340
+            y: 320
             width: 60
             height: 50
             widgets:
@@ -505,11 +516,11 @@ lvgl:
                 - homeassistant.service:
                     service: cover.stop_cover
                     data:
-                      entity_id: cover.rolluikzolder_cover_1
+                      entity_id: cover.rolluikwoonkamer_cover_1
 
         - button:
             x: 390
-            y: 340
+            y: 320
             width: 60
             height: 50
             widgets:
@@ -522,7 +533,79 @@ lvgl:
                 - homeassistant.service:
                     service: cover.close_cover
                     data:
-                      entity_id: cover.rolluikzolder_cover_1
+                      entity_id: cover.rolluikwoonkamer_cover_1
+
+        - button:
+            x: 280
+            y: 210
+            id: mm_btn
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            width: 50
+            height: 50
+            widgets:
+              - label:
+                  text_font: roboto40
+                  align: CENTER
+                  text:  "\U000F04C3"
+            on_press:
+              then:
+                lvgl.page.show: multimedia
+
+        - button:
+            x: 280
+            y: 260
+            id: qr_btn
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            width: 50
+            height: 50
+            widgets:
+              - label:
+                  text_font: roboto40
+                  align: CENTER
+                  text: "\U000F0433"
+            on_press:
+              then:
+                lvgl.page.show: qr
+
+        - button:
+            x: 350
+            y: 260
+            id: trash_btn
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            width: 50
+            height: 50
+            widgets:
+              - label:
+                  text_font: roboto40
+                  align: CENTER
+                  text: "\U000F174F"
+            on_press:
+              then:
+                lvgl.page.show: trash
+
+
+        - button:
+            x: 350
+            y: 210
+            id: music_btn
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            width: 50
+            height: 50
+            widgets:
+              - label:
+                  text_font: roboto40
+                  align: CENTER
+                  text: "\U000F075A"
+            on_press:
+              then:
+                - homeassistant.service:
+                    service: script.turn_on
+                    data:
+                      entity_id: script.mediacenter_on
 
 
 
@@ -530,11 +613,11 @@ lvgl:
       widgets:
         - image:
             align: CENTER
-            src: back7
+            src: back1
         - obj: # a properly placed coontainer object for all these controls
             layout: # enable the GRID layout for the children widgets
               type: GRID # split the rows and the columns proportionally
-              grid_columns: [FR(1), FR(1), FR(1)] # equal
+              grid_columns: [FR(1), FR(1)] # equal
               grid_rows: [FR(50), FR(50)] # like percents
             width: 100%
             height: 90%
@@ -549,7 +632,7 @@ lvgl:
               - obj:
                   id: info_btn
                   #checkable: false
-                  grid_cell_column_pos: 2 # place the widget in
+                  grid_cell_column_pos: 1 # place the widget in
                   grid_cell_row_pos: 1 # the corresponding cell
                   grid_cell_x_align: STRETCH
                   grid_cell_y_align: STRETCH
@@ -575,7 +658,7 @@ lvgl:
                           - homeassistant.service:
                               service: input_number.increment
                               data: 
-                                entity_id: input_number.house_temperature_setpoint
+                                entity_id: input_number.woonkamer_temperature_setpoint
                     
                     - label:
                         text_font: btn_icons_font2
@@ -583,7 +666,7 @@ lvgl:
                         align: CENTER
                         y: -5
                     - label:
-                        id: house_setpoint_display
+                        id: woonkamer_setpoint_display
                         text_font: roboto24
                         text: "--- °C"
                         align: CENTER
@@ -604,23 +687,56 @@ lvgl:
                           - homeassistant.service:
                               service: input_number.decrement
                               data: 
-                                entity_id: input_number.house_temperature_setpoint
+                                entity_id: input_number.woonkamer_temperature_setpoint
 
+        - label:
+            id: display_house_temp2
+            text: house temp
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 220
+            x: 15
 
         - label:
             align: LEFT_MID
-            id: display_valve
-            text: valve
-            text_font: roboto32
+            id: display_co2
+            text: "\000F07E4"
+            text_font: roboto24
             text_color: 0xFFFFFF
-            y: 95
+            y: 42
             x: 20
+
+
+        - button:
+            x: 440
+            y: 5
+            width: 40
+            height: 40
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            widgets:
+              - label:
+                  id: button_close
+                  align: CENTER
+                  text_font: roboto24
+                  text: "\U000F0159"
+            on_press:
+              - lvgl.page.show:
+                  id: clock_page
+
+        - label:
+            x: 5
+            y: 5
+            text: "Thermostaat Woonkamer"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+
 
     - id: airco_page
       widgets:
         - image:
             align: CENTER
-            src: back7
+            src: back1
         - obj: # a properly placed coontainer object for all these controls
             layout: # enable the GRID layout for the children widgets
               type: GRID # split the rows and the columns proportionally
@@ -816,7 +932,278 @@ lvgl:
                               data: 
                                 entity_id: climate.aircozolder_mqtt_hvac
 
+    - id: multimedia
+      widgets:
+        - image:
+            align: CENTER
+            src: back1
 
+        - button:
+            x: 440
+            y: 5
+            width: 40
+            height: 40
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: roboto24
+                  text: "\U000F0159"
+            on_press:
+              - lvgl.page.show:
+                  id: clock_page
+
+        - label:
+            x: 5
+            y: 5
+            text: "Marantz NR1509"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+
+        - button:
+            x: 10
+            y: 200
+            width: 50
+            height: 50
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            widgets:
+               - label:
+                  text_font: roboto32
+                  id: receiver_button
+                  text: "\U000F0906"
+                  align: LEFT_MID
+            on_click:
+              - homeassistant.service:
+                  service: switch.toggle
+                  data_template:
+                    entity_id: switch.marantz_power
+
+        - button:
+            id: marantz_mute_button_1
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            width: 50
+            height: 40
+            widgets:
+               - label:
+                  text_font: roboto32
+                  id: marantz_mute_button
+                  text: "\U000F0906"
+                  align: LEFT_MID
+            y: 430
+            x: 10
+            on_click:
+              - homeassistant.service:
+                  service: media_player.volume_mute
+                  data:
+                    entity_id: media_player.marantz_nr1509
+                    is_volume_muted: !lambda 'return !id(marantz_mute).state;'
+
+
+        - label:
+            id: display_marantz_source
+            text: source
+            text_align: right
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 210
+            x: 70
+
+        - label:
+            id: display_marantz_media_title
+            text: title
+            text_align: right
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 280
+            x: 20
+
+        - label:
+            id: display_marantz_media_artist
+            text: artist
+            text_align: right
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 310
+            x: 20
+
+
+        - label:
+            id: marantzplus
+            text: "\U000F075D"
+            text_align: right
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 430
+            x: 440
+
+        - label:
+            id: marantzmin
+            text: "\U000F075E"
+            text_align: right
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 430
+            x: 130
+
+
+        - slider:
+            x: 170
+            y: 440
+            id: slider_media_player
+            value: 5
+            min_value: 1
+            max_value: 70
+            pad_all: 8
+            adv_hittest: true
+            on_value:
+              - homeassistant.action:
+                  action: media_player.volume_set
+                  data:
+                    entity_id: media_player.marantz_nr1509
+                    volume_level: !lambda return (x / 100);
+
+        - label:
+            id: volume_media_player
+            text: 0
+            text_align: right
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 400
+            x: 280
+
+
+    - id: qr
+      widgets:
+        - image:
+            align: CENTER
+            src: back1
+        - image:
+            x: 140
+            y: 240
+            src: qrimage
+        - button:
+            x: 440
+            y: 5
+            width: 40
+            height: 40
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: roboto24
+                  text: "\U000F0159"
+            on_press:
+              - lvgl.page.show:
+                  id: clock_page
+
+        - label:
+            x: 5
+            y: 5
+            text: "Wifi QR"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+
+
+    - id: trash
+      widgets:
+        - image:
+            align: CENTER
+            src: back1
+        - button:
+            x: 440
+            y: 5
+            width: 40
+            height: 40
+            bg_opa: TRANSP
+            shadow_opa: TRANSP
+            widgets:
+              - label:
+                  align: CENTER
+                  text_font: roboto24
+                  text: "\U000F0159"
+            on_press:
+              - lvgl.page.show:
+                  id: clock_page
+
+        - label:
+            x: 5
+            y: 5
+            text: "Afvalwijzer"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+
+        - label:
+            text: "\U000F01B4"
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 220
+            x: 15
+
+        - label:
+            text: "Restafval"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 220
+            x: 50
+
+        - label:
+            id: display_restafval
+            text: date
+            text_align: right
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 220
+            x: 200
+
+        - label:
+            text: "\U000F01B4"
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 260
+            x: 15
+
+        - label:
+            text: "GFT"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 260
+            x: 50
+
+        - label:
+            id: display_gftafval
+            text: date
+            text_align: right
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 260
+            x: 200
+
+        - label:
+            text: "\U000F01B4"
+            text_font: roboto32
+            text_color: 0xFFFFFF
+            y: 300
+            x: 15
+
+        - label:
+            text: "Papier"
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 300
+            x: 50
+
+        - label:
+            id: display_papierafval
+            text: date
+            text_align: right
+            text_font: roboto24
+            text_color: 0xFFFFFF
+            y: 300
+            x: 200
 
 #--------------------- Sensors -------------------
 
@@ -834,11 +1221,21 @@ sensor:
   - platform: uptime
     name: Uptime
 
-
+  - platform: homeassistant
+    id: media_player_volume
+    entity_id: media_player.marantz_nr1509
+    attribute: volume_level
+    on_value:
+      - lvgl.slider.update:
+          id: slider_media_player
+          value: !lambda return (x * 100);
+      - lvgl.label.update:
+          id: volume_media_player
+          text: !lambda return std::to_string(static_cast<int>(x * 100)) + "%";
 
   - platform: homeassistant
     id: house_temp_sensor
-    entity_id: sensor.aircozolder_ble_temp
+    entity_id: sensor.thermostat_hc1_current_room_temperature
     on_value:
      then:
          - lvgl.label.update:
@@ -846,17 +1243,22 @@ sensor:
             text: 
               format: "$house_temp %.1f°C"
               args: ["id(house_temp_sensor).state"]
+         - lvgl.label.update:
+            id: display_house_temp2
+            text: 
+              format: "$house_temp %.1f°C"
+              args: ["id(house_temp_sensor).state"]
 
   - platform: homeassistant
-    id: house_setpoint_ha
-    entity_id: input_number.house_temperature_setpoint
+    id: woonkamer_setpoint_ha
+    entity_id: input_number.woonkamer_temperature_setpoint
     on_value:
-      - logger.log: id(house_setpoint_ha).state.c_str()
+      - logger.log: id(woonkamer_setpoint_ha).state.c_str()
       - lvgl.label.update:
-          id: house_setpoint_display
+          id: woonkamer_setpoint_display
           text: 
             format: "%.1f °C"
-            args: ["id(house_setpoint_ha).state"]
+            args: ["id(woonkamer_setpoint_ha).state"]
 
   - platform: homeassistant
     id: airco_setpoint_ha
@@ -869,17 +1271,6 @@ sensor:
             format: "%.1f °C"
             args: ["id(airco_setpoint_ha).state"]
 
-
-  - platform: homeassistant
-    id: house_hum_sensor
-    entity_id: sensor.aircozolder_ble_humidity
-    on_value:
-      then:
-         - lvgl.label.update:
-            id: display_house_hum
-            text: 
-              format: "$house_hum %.1f%% "
-              args: ["id(house_hum_sensor).state"]
 
 
   - platform: homeassistant
@@ -894,15 +1285,15 @@ sensor:
               args: ["id(house_solar_sensor).state"]
 
   - platform: homeassistant
-    id: house_valve_sensor
-    entity_id: sensor.zolder_trv
+    id: house_co2_sensor
+    entity_id: sensor.co2_sensor
     on_value:
       then:
         - lvgl.label.update:
-            id: display_valve
+            id: display_co2
             text: 
-              format: "$house_valve %d%% "
-              args: ["int(round(id(house_valve_sensor).state))"]
+              format: "$house_co2 %.0f ppm"
+              args: ["id(house_co2_sensor).state"]
 
 
   - platform: homeassistant
@@ -966,7 +1357,7 @@ sensor:
 
   - platform: homeassistant
     id: cover_myroom_pos
-    entity_id: cover.rolluikzolder_cover_1
+    entity_id: cover.rolluikwoonkamer_cover_1
     attribute: current_position
     on_value:
       - if:
@@ -1045,8 +1436,72 @@ text_sensor:
             text: !lambda return id(ha_time).state.c_str();
 
   - platform: homeassistant
+    id: restafval_text_sensor
+    entity_id: sensor.mijnafvalwijzer_restafval
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: display_restafval
+            text: !lambda |-
+              return id(restafval_text_sensor).state.c_str();
+
+  - platform: homeassistant
+    id: gftafval_text_sensor
+    entity_id: sensor.mijnafvalwijzer_gft
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: display_gftafval
+            text: !lambda |-
+              return id(gftafval_text_sensor).state.c_str();
+
+  - platform: homeassistant
+    id: papierafval_text_sensor
+    entity_id: sensor.mijnafvalwijzer_papier
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: display_papierafval
+            text: !lambda |-
+              return id(papierafval_text_sensor).state.c_str();
+
+  - platform: homeassistant
+    id: marantz_source_text_sensor
+    entity_id: media_player.marantz_nr1509
+    attribute: source
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: display_marantz_source
+            text: !lambda |-
+              return id(marantz_source_text_sensor).state.c_str();
+
+  - platform: homeassistant
+    id: marantz_media_title_text_sensor
+    entity_id: media_player.marantz_nr1509_2
+    attribute: media_title
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: display_marantz_media_title
+            text: !lambda |-
+              return id(marantz_media_title_text_sensor).state.c_str();
+
+  - platform: homeassistant
+    id: marantz_media_artist_text_sensor
+    entity_id: media_player.marantz_nr1509_2
+    attribute: media_artist
+    on_value:
+      then:
+        - lvgl.label.update:
+            id: display_marantz_media_artist
+            text: !lambda |-
+              return id(marantz_media_artist_text_sensor).state.c_str();
+
+
+  - platform: homeassistant
     id: cover_myroom_state
-    entity_id: cover.rolluikzolder_cover_1
+    entity_id: cover.rolluikwoonkamer_cover_1
     on_value:
       - if:
           condition:
@@ -1140,56 +1595,88 @@ text_sensor:
     on_value:
       then:
         - lambda: |-
-            id(weather_condition_icon).publish_state(id(ha_weather_cond).state.c_str());
-        - component.update: weather_condition_icon
+            id(weather_condition_image).publish_state(id(ha_weather_cond).state.c_str());
+        - component.update: weather_condition_image
+
 
 
 
 
   - platform: template
-    id: weather_condition_icon
+    id: weather_condition_image
     lambda: |-
       std::string state = id(ha_weather_cond).state.c_str();
 
       // Controleer de elevation om te bepalen of het nacht is
       if (id(my_sun).elevation() < 0) {  // Haakjes toegevoegd
         if (state == "SUNNY") {
-          return std::string("$night");
+          return std::string("night");
         } else if (state == "PARTLYCLOUDY") {
-          return std::string("$nightpartlycloudy");
+          return std::string("nightpartlycloudy");
+        } else if (state == "CLOUDY") {
+          return std::string("nightcloudy");
+        } else if (state == "RAINY") {
+          return std::string("nightrain");
         }
       }
 
-      if (state == "RAINY") { return std::string("$rainy"); }
-      else if (state == "CLOUDY") { return std::string("$cloudy"); }
-      else if (state == "PARTLYCLOUDY") { return std::string("$partlycloudy"); }
-      else if (state == "SUNNY") { return std::string("$sunny"); }
-      else if (state == "FOG") { return std::string("$fog"); }
-      else if (state == "HAIL") { return std::string("$hail"); }
-      else if (state == "HAZY") { return std::string("$hazy"); }
-      else if (state == "LIGHTNING") { return std::string("$lightning"); }
-      else if (state == "LIGHTNINGRAINY") { return std::string("$lightningrainy"); }
-      else if (state == "NIGHT") { return std::string("$night"); }
-      else if (state == "NIGHTPARTLYCLOUDY") { return std::string("$nightpartlycloudy"); }
-      else if (state == "PARTLYRAINY") { return std::string("$partlyrainy"); }
-      else if (state == "PARTLYLIGHTNING") { return std::string("$partlylightning"); }
-      else if (state == "PARTLYSNOWY") { return std::string("$partlysnowy"); }
-      else if (state == "PARTLYSNOWYRAINY") { return std::string("$partlysnowyrainy"); }
-      else if (state == "POURING") { return std::string("$pouring"); }
-      else if (state == "SNOWY") { return std::string("$snowy"); }
-      else if (state == "SNOWYHEAVY") { return std::string("$snowyheavy"); }
-      else if (state == "SUNSET") { return std::string("$sunset"); }
-      else if (state == "TORNADO") { return std::string("$tornado"); }
-      else if (state == "WINDY") { return std::string("$windy"); }
-      else if (state == "HURRICANE") { return std::string("$hurricane"); }
-      return std::string("$happyface");
+      if (state == "RAINY") { return std::string("rainy"); }
+      else if (state == "CLOUDY") { return std::string("cloudy"); }
+      else if (state == "PARTLYCLOUDY") { return std::string("partlycloudy"); }
+      else if (state == "SUNNY") { return std::string("sunny"); }
+      else if (state == "FOG") { return std::string("fog"); }
+      else if (state == "HAIL") { return std::string("hail"); }
+      else if (state == "HAZY") { return std::string("hazy"); }
+      else if (state == "LIGHTNING") { return std::string("lightning"); }
+      else if (state == "LIGHTNINGRAINY") { return std::string("lightning"); }
+      else if (state == "NIGHT") { return std::string("night"); }
+      else if (state == "NIGHTPARTLYCLOUDY") { return std::string("nightpartlycloudy"); }
+      else if (state == "PARTLYRAINY") { return std::string("partlyrainy"); }
+      else if (state == "PARTLYLIGHTNING") { return std::string("partlylightning"); }
+      else if (state == "PARTLYSNOWY") { return std::string("partlysnowy"); }
+      else if (state == "PARTLYSNOWYRAINY") { return std::string("partlysnowyrainy"); }
+      else if (state == "POURING") { return std::string("pouring"); }
+      else if (state == "SNOWY") { return std::string("snowy"); }
+      else if (state == "SNOWYHEAVY") { return std::string("snowyheavy"); }
+      else if (state == "SUNSET") { return std::string("sunset"); }
+      else if (state == "TORNADO") { return std::string("tornado"); }
+      else if (state == "WINDY") { return std::string("windy"); }
+      else if (state == "HURRICANE") { return std::string("hurricane"); }
+      return std::string("green");
     on_value:
       then:
-        - logger.log: id(weather_condition_icon).state.c_str()
-        - lvgl.label.update:
-            id: display_weather_icon
-            text: !lambda return id(weather_condition_icon).state.c_str();
-
+        - lambda: |-
+            auto script_name = id(weather_condition_image).state.c_str();
+            ESP_LOGD("main", "Executing script: %s", script_name);
+            if (script_name == std::string("rainy")) {
+              id(rainy)->execute();
+            } else if (script_name == std::string("cloudy")) {
+              id(cloudy)->execute();
+            } else if (script_name == std::string("partlycloudy")) {
+              id(partlycloudy)->execute();
+            } else if (script_name == std::string("sunny")) {
+              id(sunny)->execute();
+            } else if (script_name == std::string("fog")) {
+              id(fog)->execute();
+            } else if (script_name == std::string("haze")) {
+              id(haze)->execute();
+            } else if (script_name == std::string("lightning")) {
+              id(lightning)->execute();
+            } else if (script_name == std::string("hail")) {
+              id(hail)->execute();
+            } else if (script_name == std::string("night")) {
+              id(night)->execute();
+            } else if (script_name == std::string("pouring")) {
+              id(pouring)->execute();
+            } else if (script_name == std::string("nightpartlycloudy")) {
+              id(nightpartlycloudy)->execute();
+            } else if (script_name == std::string("nightcloudy")) {
+              id(nightcloudy)->execute();
+            } else if (script_name == std::string("nightrain")) {
+              id(nightrain)->execute();
+            } else {
+              ESP_LOGW("main", "No matching script found for: %s", script_name);
+            }
 
 
 
@@ -1209,7 +1696,7 @@ text_sensor:
 binary_sensor:
   - platform: homeassistant
     id: zolderlamp
-    entity_id: switch.zolderverlichting
+    entity_id: light.woonkamer_lampen
     publish_initial_state: true
     on_state:
       then:
@@ -1225,6 +1712,44 @@ binary_sensor:
                   id: zolderlamp_button
                   text_color: 0xFFFFFF
 
+  - platform: homeassistant
+    id: marantz_mute
+    entity_id: media_player.marantz_nr1509
+    attribute: is_volume_muted
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+              lambda: 'return id(marantz_mute).state == true;'  # Controleer of de media player gemute is
+            then:
+              - lvgl.label.update:
+                  id: marantz_mute_button
+                  text: "\U000F075F"
+            else:
+              - lvgl.label.update:
+                  id: marantz_mute_button
+                  text: "\U000F057F"
+
+
+  - platform: homeassistant
+    id: buitenlamp
+    entity_id: switch.buitenlamp
+    publish_initial_state: true
+    on_state:
+      then:
+        - if:
+            condition:
+               lambda: 'return id(buitenlamp).state == true;'
+            then:
+              - lvgl.widget.update:
+                  id: buitenlamp_button
+                  text_color: 0xFFCB75
+            else:
+              - lvgl.widget.update:
+                  id: buitenlamp_button
+                  text_color: 0xFFFFFF
+
 
 
   - platform: homeassistant
@@ -1238,8 +1763,15 @@ binary_sensor:
                lambda: 'return id(radio_status_sensor).state == true;'
             then:
                - lvgl.widget.show: radio_status
+               - lvgl.widget.update:
+                   id: receiver_button
+                   text_color: 0xFFCB75
             else:
                - lvgl.widget.hide: radio_status
+               - lvgl.widget.update:
+                   id: receiver_button
+                   text_color: 0xFFFFFF
+
 
   - platform: homeassistant
     id: tv_status_sensor
@@ -1338,6 +1870,10 @@ output:
   - platform: gpio
     pin: 40
     id: panel_output
+
+
+
+
 #-------------------------------------------
 # LIGHTS
 #-------------------------------------------
@@ -1362,9 +1898,91 @@ image:
     id: back7
     type: RGB565
   
+  - file: 'images/back1.png'
+    id: back1
+    type: RGB565
+
   - file: 'images/ha_logo2.png'
     id: boot_logo
     type: RGB565
+
+  - file: 'images/qr.png'
+    id: qrimage
+    type: RGB565
+
+  - file: 'images/cloudy.png'
+    id: w_cloudy
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/partlycloudy.png'
+    id: w_partlycloudy
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/nightcloudy.png'
+    id: w_nightcloudy
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/nightrain.png'
+    id: w_nightrain
+    type: RGB565
+    use_transparency: true
+
+
+  - file: 'images/sunny.png'
+    id: w_sunny
+    type: RGB565
+    use_transparency: true
+
+
+  - file: 'images/fog.png'
+    id: w_fog
+    type: RGB565
+    use_transparency: true
+
+
+  - file: 'images/rainy.png'
+    id: w_rainy
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/hail.png'
+    id: w_hail
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/haze.png'
+    id: w_haze
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/lightning.png'
+    id: w_lightning
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/code-green.png'
+    id: w_green
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/night.png'
+    id: w_night
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/pouring.png'
+    id: w_pouring
+    type: RGB565
+    use_transparency: true
+
+  - file: 'images/nightpartlycloudy.png'
+    id: w_nightpartlycloudy
+    type: RGB565
+    use_transparency: true
+
 
 
 font:
@@ -1390,13 +2008,16 @@ font:
           "\U000f0084",
           "\U000f0091",
           "\U000F04C3",
+          "\U000F07E4",
           "\U000F0143", # mdi-arrow_up
           "\U000F0140", # mdi-arrow_down
+          "\U000F0159",
           "\U000F050F", # Thermometer
           $house_solar,
           $house_solar2,
           $house_valve,
 	  $house_hum,
+          $airco,
           $house_temp 
           ]
 
@@ -1425,10 +2046,16 @@ font:
           "\U000F0143", # mdi-arrow_up
           "\U000F0140", # mdi-arrow_down
           "\U000F050F", # Thermometer
+          "\U000F01B4", # trash
+          "\U000F057F", # speakerlow
+          "\U000F075D", # speakerplus
+          "\U000F075E", # Speakermin
+          "\U000F075F", # speakermute
           $house_solar,
           $house_valve,
           $house_solar2,
           $house_hum,
+          $powerbutton,
           $house_temp 
           ]
 
@@ -1449,7 +2076,7 @@ font:
       "\U000F0717",
       "\U000F0510",
       "\U000F058E",
-      "\U000F0210"
+      "\U000F0210",
     ]
 
   - file: "gfonts://Roboto"
@@ -1532,9 +2159,21 @@ font:
       "\U000F0335", # mdi-lightbulb
       "\U000F0769", # mdi-ceiling-light
       "\U000F08DD", # mdi-floor-lamp
+      "\U000F1253", # mdi-groupbulb
       "\U000F12BA", # mdi-string-lights
       ]          
       
+  - file: 'fonts/hass-hue-icons.ttf' # http://materialdesignicons.com/cdn/7.4.47/
+    id: huelight32
+    size: 32
+    bpp: 4
+    glyphs: [
+      "\U0000E95F",
+      "\U0000EA10",
+      "\U0000EA5C"
+      ]
+
+
   - file: "gfonts://Roboto"
     id: roboto40
     size: 40
@@ -1544,7 +2183,12 @@ font:
         glyphs: [
           $lightbulb,
           $house_temp,
-          $airco
+          $airco,
+          $powerbutton,
+          "\U000F04C3",
+          "\U000F0433",
+          "\U000F075A",
+          "\U000F174F"
         ]
   
   - file: "gfonts://Roboto"
@@ -1595,7 +2239,6 @@ touchscreen:
     mirror_y: false
   id: my_touchscreen
   display: my_display
-
   on_touch:
     - logger.log:
           format: Touch at (%d, %d)
@@ -1615,8 +2258,9 @@ interval:
   - interval: 30s
     then:
       - lambda: |-
+          // Controleer het tijdstip voor night_mode
           auto now = id(ha_date).now();
-          if ((now.hour >= 22 && now.minute >= 45) || (now.hour < 7)) {
+          if ((now.hour >= 23 && now.minute >= 15) || (now.hour < 7)) {
             id(night_mode) = true;
           } else {
             id(night_mode) = false;
@@ -1630,7 +2274,7 @@ script:
       - lvgl.resume:
       - light.turn_on:
           id: backlight
-          brightness: 75%
+          brightness: 60%
           transition_length: 2s
 
       # Controleer of het 'night mode' is
@@ -1641,6 +2285,97 @@ script:
             # Schakel backlight na 30 seconden weer uit als het nacht is
             - delay: 30s
             - light.turn_off: backlight
+            - lvgl.page.show:
+                id: clock_page
+      - delay: 15s
+      - lvgl.page.show:
+          id: clock_page
+
+  - id: cloudy
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_cloudy
+
+  - id: sunny
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_sunny
+
+  - id: rainy
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_rainy
+
+  - id: partlycloudy
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_partlycloudy
+
+  - id: fog
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_fog
+
+  - id: haze
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_haze
+
+  - id: hail
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_hail
+
+  - id: green
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_green
+
+  - id: lightning
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_lightning
+
+  - id: pouring
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_pouring
+
+  - id: night
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_night
+
+  - id: nightpartlycloudy
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_nightpartlycloudy
+
+  - id: nightcloudy
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_nightcloudy
+
+  - id: nightrain
+    then:
+      - lvgl.image.update:
+          id: display_weather_image
+          src: w_nightrain
+
+
 
 #-------------------------------------------
 # Display st7701s spi
@@ -1653,6 +2388,7 @@ spi:
 display:
   - platform: st7701s
     id: my_display
+    rotation: 90
     update_interval: never
     auto_clear_enabled: false
     data_rate: 2MHz
