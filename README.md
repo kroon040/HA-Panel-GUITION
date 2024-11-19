@@ -14,5 +14,5 @@ Specs:
 <img src="https://github.com/user-attachments/assets/f335d61a-1fad-4f84-9e24-6448e894e426" width=50% height=50%>
 
 
-<img src="https://github.com/user-attachments/assets/2d43e933-0358-41c2-9a19-9ded28eb159" width=50% height=50%>
 
+![IMG_4426-2](https://github.com/user-attachments/assets/dd7223e6-2a2b-4c40-9e65-479c8c10cb86)
