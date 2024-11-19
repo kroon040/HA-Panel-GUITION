@@ -15,4 +15,4 @@ Specs:
 
 <img src="https://github.com/user-attachments/assets/dd7223e6-2a2b-4c40-9e65-479c8c10cb86" width=50% height=50%>
 
-![IMG_4426-2](https://github.com/user-attachments/assets/dd7223e6-2a2b-4c40-9e65-479c8c10cb86)
+
