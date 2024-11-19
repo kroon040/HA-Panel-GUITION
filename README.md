@@ -11,6 +11,5 @@ Specs:
     SD Card slot
 
 
-![IMG_4382]width=50% height=50%(https://github.com/user-attachments/assets/f335d61a-1fad-4f84-9e24-6448e894e426)
-
+<img src="https://github.com/user-attachments/assets/f335d61a-1fad-4f84-9e24-6448e894e426" width=50% height=50%>
 
