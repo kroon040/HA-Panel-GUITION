@@ -2016,7 +2016,7 @@ font:
           $house_solar,
           $house_solar2,
           $house_valve,
-	  $house_hum,
+          $house_hum,
           $airco,
           $house_temp 
           ]
